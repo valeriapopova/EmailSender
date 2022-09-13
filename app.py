@@ -14,28 +14,28 @@ login = '@mail.ru'
 passwd = ''
 
 
-@app.route('/email/post', methods=['POST', 'GET'])
+@app.route('/email/post', methods=['POST'])
 def post_email():
-    if request.method == 'POST':
-        try:
-            json_file = request.get_json(force=False)
-            name = json_file['data'][0]['name']
-            phone = json_file['data'][1]['phone']
-            to = json_file['to']
-            try:
-                msg = MIMEMultipart()
-                msg['Message-ID'] = make_msgid()
-                msg['Subject'] = f'Новый лид!!! имя {name} , номер телефона {phone}'
-                msg['From'] = login
-                msg['To'] = to
-                s = smtplib.SMTP_SSL("smtp.mail.ru", 465)
-                s.login(login, passwd)
-                s.sendmail(login, to, msg.as_string())
-                s.quit()
-                return Response("Сообщение отправлено", 201)
-            except:
-                Response("Сообщение  не отправлено", 404)
 
-        except BadRequestKeyError:
-            return Response("Пустое значение", 400)
+    try:
+        json_file = request.get_json(force=False)
+        name = json_file['data'][0]['name']
+        phone = json_file['data'][1]['phone']
+        to = json_file['to']
+        try:
+            msg = MIMEMultipart()
+            msg['Message-ID'] = make_msgid()
+            msg['Subject'] = f'Новый лид!!! имя {name} , номер телефона {phone}'
+            msg['From'] = login
+            msg['To'] = to
+            s = smtplib.SMTP_SSL("smtp.mail.ru", 465)
+            s.login(login, passwd)
+            s.sendmail(login, to, msg.as_string())
+            s.quit()
+            return Response("Сообщение отправлено", 201)
+        except:
+            Response("Сообщение  не отправлено", 404)
+
+    except BadRequestKeyError:
+        return Response("Пустое значение", 400)
 
