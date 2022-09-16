@@ -6,12 +6,9 @@ import smtplib
 from werkzeug.exceptions import BadRequestKeyError
 
 from config import Configuration
-
+from settings import login, passwd
 app = Flask(__name__)
 app.config.from_object(Configuration)
-
-login = '@mail.ru'
-passwd = ''
 
 
 @app.route('/email/post', methods=['POST'])
@@ -21,7 +18,7 @@ def post_email():
         json_file = request.get_json(force=False)
         name = json_file['data'][0]['name']
         phone = json_file['data'][1]['phone']
-        to = json_file['to']
+        to = json_file['email']
         try:
             msg = MIMEMultipart()
             msg['Message-ID'] = make_msgid()
